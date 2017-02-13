@@ -31,6 +31,7 @@ func (nf *notfoundHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	nfw := &notFoundWriter{ResponseWriter: w}
 	nf.mux.ServeHTTP(nfw, r)
 	if nfw.notfound {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusNotFound)
 		nf.custom404.ServeHTTP(w, r)
 	}
