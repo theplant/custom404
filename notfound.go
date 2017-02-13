@@ -4,7 +4,7 @@ import "net/http"
 
 type notfoundHandler struct {
 	mux       http.Handler
-	custom404 http.HandlerFunc
+	custom404 http.Handler
 }
 
 type notFoundWriter struct {
@@ -32,10 +32,10 @@ func (nf *notfoundHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	nf.mux.ServeHTTP(nfw, r)
 	if nfw.notfound {
 		w.WriteHeader(http.StatusNotFound)
-		nf.custom404(w, r)
+		nf.custom404.ServeHTTP(w, r)
 	}
 }
 
-func WithCustom404(mux http.Handler, custom404 http.HandlerFunc) (newMux http.Handler) {
+func WithCustom404(mux http.Handler, custom404 http.Handler) (newMux http.Handler) {
 	return &notfoundHandler{mux: mux, custom404: custom404}
 }
