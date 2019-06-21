@@ -1,6 +1,9 @@
 package custom404
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 type notfoundHandler struct {
 	mux       http.Handler
@@ -33,7 +36,8 @@ func (nf *notfoundHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if nfw.notfound {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusNotFound)
-		nf.custom404.ServeHTTP(w, r)
+		newr := r.WithContext(context.WithValue(r.Context(), "statuscode", http.StatusNotFound))
+		nf.custom404.ServeHTTP(w, newr)
 	}
 }
 
